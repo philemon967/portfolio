@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <style>
+  html,body{background:#0d0d0d;color:#fff}
+  .bg{position:fixed;inset:0;background:#0d0d0d}
+  </style>
+  <link rel="preload" as="image" href="images/textures/home-landscape.jpg" media="(min-width:721px)">
+  <link rel="preload" as="image" href="images/textures/home-portrait.jpg" media="(max-width:720px)">
+  <meta name="theme-color" content="#0d0d0d">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Film works – Philémon Croc</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="brand">Philémon Croc</h1>
+  </header>
+
+  <main class="home" style="min-height:60svh">
+    <h2 style="margin:0 0 .5rem 0;">Film works</h2>
+    <p class="intro">Ici, tu ajouteras tes sélections (clips, pubs, docu). On pourra mettre une grille de vignettes avec lecteur embarqué (Vimeo/YouTube) et fiches projet.</p>
+    <p><a class="cta" href="index.html">← Retour à l’accueil</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="contact">
+      <a href="mailto:contact@philemoncroc.com" class="mail">contact@philemoncroc.com</a>
+      <span class="dot">•</span>
+      <a href="https://vimeo.com/" target="_blank" rel="noopener">Vimeo</a>
+      <span class="dot">•</span>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <p class="legal">© <span id="year"></span> Philémon Croc</p>
+  </footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+</body>
+</html>

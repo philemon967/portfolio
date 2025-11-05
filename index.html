@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <style>
+    html,body{background:#0d0d0d;color:#fff}
+    .bg{position:fixed;inset:0;background:#0d0d0d}
+  </style>
+
+  <!-- Préchargement fonds -->
+  <link rel="preload" as="image" href="images/textures/home-landscape.jpg" media="(min-width:721px)">
+  <link rel="preload" as="image" href="images/textures/home-portrait.jpg" media="(max-width:720px)">
+
+  <meta name="theme-color" content="#0d0d0d">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Philémon Croc — Portfolio</title>
+  <meta name="description" content="Portfolio de Philémon Croc — audiovisual & photographic works." />
+
+  <!-- Polices (Work Sans globale, Genos pour labels/contact si tu veux) -->
+  <link href="https://fonts.googleapis.com/css2?family=Genos:wght@300;400;600&family=Tilt+Prism&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="page fade-in"
+      data-bg-desktop="images/textures/home-landscape.jpg"
+      data-bg-mobile="images/textures/home-portrait.jpg">
+
+  <!-- ======= MARQUE / LOGO ======= -->
+  <aside class="sidebar">
+    <a href="index.html" class="brand" aria-label="Accueil Philémon Croc">PHILÉMON</a>
+  </aside>
+
+  <!-- ======= LIEN CONTACT ======= -->
+  <a data-transition href="contact.html" class="contact-link" aria-label="Page Contact">contact</a>
+
+  <!-- ======= CONTENU CENTRAL : SVG avec 2 triangles ======= -->
+ <div class="content">
+  <div class="tri-wrap">
+    <a class="tri tri-left" href="photo-works.html" aria-label="Photo Works">
+      <span class="tri-label">PHOTO<br>WORKS</span>
+    </a>
+
+    <a class="tri tri-right" href="film-works.html" aria-label="Audiovisual Works">
+      <span class="tri-label">AUDIOVISUAL<br>WORKS</span>
+    </a>
+  </div>
+</div>
+
+
+  <!-- ======= CALQUE DE FOND ======= -->
+  <div class="bg" aria-hidden="true"></div>
+
+  <!-- ======= JS ======= -->
+  <script src="app.js"></script>
+</body>
+</html>

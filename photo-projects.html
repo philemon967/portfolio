@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <style>
+    html,body{background:#0d0d0d;color:#fff}
+    .bg{position:fixed;inset:0;background:#0d0d0d}
+  </style>
+  <link rel="preload" as="image" href="images/textures/home-landscape.jpg" media="(min-width:721px)">
+  <link rel="preload" as="image" href="images/textures/home-portrait.jpg" media="(max-width:720px)">
+  <meta name="theme-color" content="#0d0d0d">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projet — Philémon Croc</title>
+  <meta name="description" content="Série photographique — Projet." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="page fade-in project-page"
+      data-bg-desktop="images/textures/home-landscape.jpg"
+      data-bg-mobile="images/textures/home-portrait.jpg">
+
+  <!-- Fixes -->
+  <aside class="sidebar">
+    <a href="index.html" class="brand" aria-label="Accueil Philémon Croc">PHILÉMON</a>
+  </aside>
+  <a data-transition href="contact.html" class="contact-link" aria-label="Page Contact">Contact</a>
+
+  <!-- CONTENU PROJET -->
+  <main class="project">
+
+    <section class="project-grid">
+      <div class="project-gallery" aria-label="Galerie verticale"></div>
+      <aside class="project-meta"><p id="p-meta"></p></aside>
+    </section>
+  </main>
+
+  <!-- Flèches de navigation projets -->
+  <nav class="proj-nav" aria-label="Navigation projets">
+    <a class="nav-btn nav-prev" data-transition href="#" aria-label="Projet précédent">‹</a>
+    <a class="nav-btn nav-next" data-transition href="#" aria-label="Projet suivant">›</a>
+  </nav>
+
+  <!-- Bouton de retour vers la grille -->
+  <nav class="page-close" aria-label="Fermer">
+    <a class="close-btn" href="photo-works.html" data-transition aria-label="Retour à Photo Works">×</a>
+  </nav>
+
+  <!-- Lightbox plein écran -->
+  <div class="lightbox" aria-hidden="true">
+    <button class="lb-btn lb-prev" aria-label="Image précédente">‹</button>
+    <img class="lb-media" alt="">
+    <button class="lb-btn lb-next" aria-label="Image suivante">›</button>
+    <button class="lb-btn lb-close" aria-label="Fermer">×</button>
+  </div>
+
+  <div class="bg" aria-hidden="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>

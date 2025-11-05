@@ -1,0 +1,489 @@
+/* =========================================================
+   FONTS & RESET
+========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Prism&family=Work+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Afficher les \n dans le texte du projet */
+#p-meta { white-space: pre-line; }
+
+
+
+* { box-sizing: border-box; font-family: inherit; }
+html, body { margin: 0; padding: 0; }
+img { max-width: 100%; display: block; }
+
+/* =========================================================
+   DESIGN TOKENS (CSS variables)
+========================================================= */
+:root{
+  --bg: #000000;
+  --fg: #a52713;
+  --muted: #ababab;
+  --accent: #c8c8c8;
+  --tri: #ababab;
+  --tri-border: #ababab;
+  --tri-ratio: 2 / 1.25;
+  --tri-b: clamp(8px, 1.4vmin, 14px);
+  --tri-fill: rgba(210,210,210,.92);
+  --tri-stroke: rgba(255,255,255,.12);
+  --tri-text: #b33;
+  /* UI font = Work Sans partout */
+  --ui-font: "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* =========================================================
+   TYPO / BASE
+========================================================= */
+html {
+  /* Typo par défaut du site = Work Sans */
+  html { font-family: var(--ui-font); color: var(--fg); }
+}
+body {
+  background: var(--bg);           /* ✅ on laisse l'image au calque .bg via JS */
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================================
+   CALQUE DE FOND .bg (unique source d'image de fond)
+========================================================= */
+
+.bg{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('images/textures/home-landscape.jpg');
+  background-position: top center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: saturate(105%) contrast(105%);
+}
+
+/* Supprime le pseudo-élément qui pouvait recouvrir */
+.bg::after{ content: none; }
+
+/* Mobile */
+@media (max-width: 720px){
+  .bg{ background-image: url('images/textures/home-portrait.jpg'); }
+}
+
+/* =========================================================
+   HEADER FIXES : LOGO + CONTACT
+========================================================= */
+.sidebar { position: fixed; top: 24px; left: 24px; z-index: 10; }
+.brand {
+  font-family: "Tilt Prism", "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 400;          /* Tilt Prism est surtout display, poids unique */
+  color: var(--accent);
+  text-decoration: none;
+  text-transform: none;      /* on respecte la casse “Philemon” / “philémon” */
+  letter-spacing: 0;         /* éviter un tracking trop fort avec Prism */
+  line-height: 1.05;
+  font-size: clamp(45px, 3.3vw, 60px);
+}
+.contact-link{
+  position: fixed; right: 24px; bottom: 24px; z-index: 10;
+  font-family: var(--ui-font);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: clamp(18px, 2.2vw, 28px);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   ACCUEIL : DEUX TRIANGLES LIENS
+========================================================= */
+
+/* Espace de composition fixe qui se scale (comme un viewBox) */
+.content{ min-height:100svh; display:grid; place-items:center; padding:2rem; }
+.tri-wrap{
+  position: relative;
+  width: min(960px, 92vw);
+  aspect-ratio: 1000 / 540;       /* scène proportionnelle et fiable */
+}
+
+/* Triangle équilatéral : h = sqrt(3)/2 * base  →  aspect-ratio = 1 / 0.8660254 */
+:root{
+  --tri-eq: calc(1 / 0.8660254038);
+  --tri-fill: rgba(210,210,210,.92);
+  --tri-border: rgba(255,255,255,.12);
+  --tri-text: #b33;
+  --tri-b: clamp(8px, 1.2vmin, 14px);
+}
+
+/* Forme, ombre et “bordure” */
+.tri{
+  position: absolute;
+  width: 42%;
+  aspect-ratio: var(--tri-eq);                 /* ✅ équilatéral */
+  background: var(--tri-fill);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);   /* pointe vers le bas */
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
+  text-decoration: none;
+}
+.tri::before{
+  content:"";
+  position:absolute;
+  inset: calc(var(--tri-b) * -1);              /* “bordure” responsive */
+  background: var(--tri-border);
+  clip-path: inherit;
+  z-index:-1;
+}
+
+/* Texte centré (h & v), jamais serré à gauche */
+.tri-label{
+  position:absolute; inset:50% auto auto 50%;
+  transform: translate(-50%,-50%);
+  text-align:center;
+  font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 300;
+  letter-spacing: .06em;
+  line-height: 1.08;
+  color: var(--tri-text);
+  font-size: clamp(22px, 2.8vw, 40px);
+  user-select:none;
+  pointer-events:none; /* toute la surface du triangle reste cliquable */
+}
+
+/* Placement et retournement du 2e triangle */
+.tri-left  { left: 12%; top: 20%; }
+.tri-right { right:12%; top:  6%; transform: rotate(180deg); }
+/* Remettre le texte du triangle retourné à l'endroit */
+.tri-right .tri-label{ transform: translate(-50%,-50%) rotate(180deg); }
+
+/* ===== Mobile : on garde EXACTEMENT la même géométrie, juste plus petit */
+@media (max-width: 720px){
+  .tri-wrap{ width: min(700px, 96vw); }
+  .tri-left  { left: 6%;  top: 22%; width: 70%; }
+  .tri-right { right:6%;  top:  6%; width: 70%; }
+  .tri-label { font-size: clamp(18px, 6vw, 28px); }
+}
+
+
+/* =========================================================
+   PAGE PHOTO WORKS 
+========================================================= */
+
+.photo-page { overflow: auto; }
+
+.pw-stage{
+  position: relative;
+  padding: clamp(28px, 10vh, 80px) 0; /* ordre min, préféré, max corrigé */
+  display: grid;
+  place-items: center;
+}
+
+.pw-grid{
+  width: 100vw;
+  max-width: 1150px;
+  padding: 0 clamp(8px, 2.4vw, 28px);
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  row-gap: clamp(20px, 4vh, 40px);      /* espace haut/bas entre rangées */
+  column-gap: clamp(20px, 4vw, 40px);  /* espace gauche/droite entre colonnes */
+
+  justify-items: stretch; /* les items remplissent toute la colonne */
+}
+
+.pw-card{
+  position: relative;
+  width: 100%;          
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border: none;
+}
+
+.pw-card img{
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 640px){
+  .pw-grid{
+    padding: 0 clamp(6px, 3vw, 12px);
+    row-gap: clamp(12px, 3.5vh, 20px);
+    column-gap: clamp(4px, 2vw, 10px);
+    grid-template-columns: repeat(3, 1fr); /* 3 colonnes aussi en mobile */
+  }
+  .pw-card{ width: 100%; }
+}
+
+/* =========================================================
+   PAGE PROJET — Galerie verticale + texte à droite
+========================================================= */
+
+.project-page { overflow-y: auto; }
+
+.project{
+  --pad-h: clamp(8px, 2.4vw, 28px);
+  padding: clamp(24px, 6vh, 72px) var(--pad-h) clamp(28px, 8vh, 96px);
+}
+
+/* Grille : gauche = galerie / droite = texte */
+.project-grid{
+  display: grid;
+  grid-template-columns: max-content clamp(480px, 40vw, 800px);
+  column-gap: clamp(10px, 4vw, 50px);   /* seul espace entre image et texte */
+  align-items: start;
+  justify-items: start;   
+  justify-content: center;   /* centre l’ensemble des colonnes dans la page */
+  width: max-content;        /* la grille prend juste la place des colonnes */
+  margin-inline: auto;
+  transform: translateX(clamp(100px, 10vw, 200px));
+}
+
+/* Galerie verticale (colonne gauche) */
+.project-gallery{
+  display: grid;
+  gap: clamp(24px, 2vh, 40px);
+  width: clamp(280px, 26vw, 340px);    /* largeur fixe/responsive de la colonne gauche */
+  margin: 0;             /* bord gauche du track */
+}
+
+.project-photo{ margin: 0; }
+.project-photo img{
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Colonne texte (droite), collée à gauche de sa colonne */
+.project-meta{
+  position: sticky;
+  top: 50vh;
+  transform: translateY(-50%);        /* centrage vertical doux */
+  align-self: start;
+  justify-self: start;                /* bord gauche du track */
+  max-width: none;                    /* large, limite les retours à la ligne */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  color: var(--muted);
+  font-size: clamp(14px, 1.6vw, 18px);
+  line-height: 1.6;
+}
+
+/* Responsive : pile (texte sous la galerie) */
+@media (max-width: 900px){
+  .project-grid{ grid-template-columns: 1fr; column-gap: 0; }
+  .project-meta{
+    position: static;
+    transform: none;
+    max-width: none;
+    width: 100%;
+  }
+}
+
+
+/* =============== Flèches de navigation projets =============== */
+.proj-nav{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  color: var(--accent);
+}
+.nav-btn{
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: auto;
+  height: auto;
+  padding: 0;
+  font: 100 100px/1 var(--ui-font);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: 0 2px 6px rgba(0,0,0,.45);
+  pointer-events: auto;
+  transition: transform .12s ease, opacity .12s ease;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-btn:link,
+.nav-btn:visited,
+.nav-btn:hover,
+.nav-btn:active{
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-prev{ left: 16px; }
+.nav-next{ right: 16px; }
+.nav-btn:hover{ transform: translateY(-50%) scale(1.06); }
+.nav-btn:active{ transform: translateY(-50%) scale(0.98); }
+
+@media (max-width: 640px){
+  .nav-btn{ width: 44px; height: 44px; font-size: 36px; }
+}
+
+/* ====== Bouton croix (retour à la grille) ====== */
+.page-close{
+  position: fixed; top: 16px; right: 16px; z-index: 11; pointer-events: none;
+}
+.page-close .close-btn{
+  pointer-events: auto;
+  width: auto;
+  height: auto;
+  font: 50 100px/1 var(--ui-font);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: 0 2px 6px rgba(0,0,0,.45);
+  transition: transform .12s ease, opacity .12s ease;
+  color: var(--accent);
+}
+
+.page-close .close-btn:hover{ transform: scale(1.06);
+  color: inherit;
+  text-decoration: none; 
+}
+
+.page-close .close-btn:active{ transform: scale(0.98); }
+
+.page-close .close-btn:link,
+.page-close .close-btn:visited,
+.page-close .close-btn:hover,
+.page-close .close-btn:active{
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* ====== Lightbox plein écran ====== */
+.lightbox{
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,.96);
+  display: none; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.lightbox.open{ display: flex; }
+
+.lb-media{
+  max-width: 98vw; max-height: 96vh;
+  width: auto; height: auto; object-fit: contain; display: block;
+  box-shadow: 0 12px 48px rgba(0,0,0,.6);
+}
+
+/* Boutons du lightbox */
+.lb-btn{
+  position: absolute; display: grid; place-items: center;
+  width: auto;
+  height: auto;
+  font: 50 100px/1 var(--ui-font);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: 0 2px 6px rgba(0,0,0,.55);
+  cursor: pointer; user-select: none;
+  color: inherit;
+}
+.lb-prev{ left: 16px; top: 50%; transform: translateY(-50%); }
+.lb-next{ right: 16px; top: 50%; transform: translateY(-50%); }
+.lb-close{ top: 16px; right: 16px; }
+
+.lb-btn:hover{ transform: translateY(-50%) scale(1.06); }
+.lb-prev:hover, .lb-next:hover{ transform: translateY(-50%) scale(1.06); }
+.lb-close:hover{ transform: scale(1.06); }
+.lb-btn:active{ transform: translateY(-50%) scale(0.98); }
+.lb-close:active{ transform: scale(0.98); }
+
+@media (max-width:640px){
+  .lb-btn{ width: 48px; height: 48px; font-size: 42px; }
+  .lb-prev, .lb-next{ top: auto; bottom: 16px; transform: none; }
+  .lb-prev{ left: 12px; } .lb-next{ right: 12px; }
+}
+
+/* =========================================================
+   MOBILE OVERRIDES — n'affecte PAS le desktop
+========================================================= */
+@media (max-width: 720px){
+
+  /* Container page projet */
+  .project{
+    padding: clamp(16px, 4vh, 32px) clamp(12px, 4vw, 20px);
+  }
+
+  /* La grille passe en une colonne, centrage désactivé */
+  .project-grid{
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin-inline: 0;
+    justify-content: stretch;
+    justify-items: stretch;
+    column-gap: 0;
+    row-gap: clamp(12px, 2.5vh, 20px);
+    transform: none; /* si tu avais un translateX sur desktop */
+  }
+
+  /* Galerie plein large */
+  .project-gallery{
+    width: 100%;
+    max-width: none;
+    gap: clamp(10px, 2.5vw, 16px);
+  }
+  .project-photo img{
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Texte sous la galerie, à gauche, large pour éviter les retours */
+  .project-meta{
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    margin-top: clamp(8px, 2vh, 16px);
+    text-align: left;
+    font-size: clamp(15px, 3.6vw, 17px);
+    line-height: 1.6;
+  }
+  /* si tu utilises un titre dans la colonne de droite */
+  .project-side-title{
+    font-size: clamp(18px, 5vw, 22px);
+    margin: 0 0 .4em;
+  }
+
+  /* Boutons de navigation projet (‹ ›) : en bas, plus grands */
+  .nav-btn{
+    position: fixed;
+    bottom: 14px;
+    top: auto;
+    transform: none;
+    font-size: 36px;
+    line-height: 1;
+  }
+  .nav-prev{ left: 10px; }
+  .nav-next{ right: 10px; }
+
+  /* Bouton croix (×) : un peu plus petit qu'au desktop */
+  .page-close{ top: 10px; right: 10px; }
+  .page-close .close-btn{ font: 700 40px/1 var(--ui-font); }
+
+  /* Lightbox : (déjà prévu côté CSS, mais on confirme le placement) */
+  .lb-prev, .lb-next{ bottom: 16px; top: auto; transform: none; }
+  .lb-prev{ left: 12px; } .lb-next{ right: 12px; }
+
+  /* Respecter les \n dans le texte du projet */
+  #p-meta{ white-space: pre-line; }
+
+  /* Grille des vignettes (page photo-works) : 2 colonnes pour mieux respirer */
+  .pw-grid{
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: clamp(6px, 2.5vw, 12px);
+    row-gap: clamp(6px, 2.5vh, 12px);
+    padding: 0 clamp(8px, 4vw, 16px);
+  }
+}
