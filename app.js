@@ -1,3 +1,15 @@
+// (Optionnel) Expose l’OS détecté pour d’éventuels micro-ajustements CSS
+(function setOSDataAttr() {
+  const ua = navigator.userAgent;
+  const os =
+    /iPad|iPhone|iPod/.test(ua) ? 'ios' :
+    /Android/.test(ua)          ? 'android' :
+    /Mac/.test(ua)              ? 'mac' :
+    /Win/.test(ua)              ? 'windows' : 'other';
+  document.documentElement.setAttribute('data-os', os);
+})();
+
+
 /* =========================================================
    CALQUE DE FOND (utilise data-bg-* si aucun fond n'est déjà en CSS)
 ========================================================= */
@@ -230,4 +242,136 @@ document.querySelectorAll('a[data-transition]').forEach(a => {
     triWrap.style.opacity = '1';
     triWrap.style.visibility = 'visible';
   }
+})();
+
+
+
+
+
+/* =========================================================
+   FILM WORKS : vidéo YT (ID/URL) ou poster simple
+   + Crédits : affiche les \n comme retours à la ligne
+========================================================= */
+(async () => {
+  const list = document.getElementById('film-list');
+  if (!list) return;
+
+  let data;
+  try {
+    const res = await fetch('data/films.json', { cache: 'no-store' });
+    data = await res.json();
+  } catch (e) {
+    console.error('[films.json] load error:', e);
+    list.innerHTML = '<p style="color:#bbb">Impossible de charger les films.</p>';
+    return;
+  }
+
+  const escapeHTML = (s='') =>
+    s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+  const toYouTubeId = (input='') => {
+    const s = String(input).trim();
+    if (/^[\w-]{11}$/.test(s)) return s;
+    try {
+      const u = new URL(s, location.href);
+      const host = u.hostname.replace(/^www\./,'');
+      if (host === 'youtu.be') return u.pathname.slice(1);
+      if (host.endsWith('youtube.com')) {
+        if (u.pathname === '/watch') return u.searchParams.get('v') || '';
+        for (const base of ['/embed/','/shorts/','/live/']) {
+          if (u.pathname.startsWith(base)) {
+            return u.pathname.slice(base.length).split('/')[0] || '';
+          }
+        }
+      }
+    } catch {}
+    const m = s.match(/([\w-]{11})/);
+    return m ? m[1] : '';
+  };
+
+  // Détection Safari pour éviter lazy sur srcdoc (miniatures sinon parfois invisibles)
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  const films = data.films || [];
+  list.innerHTML = films.map(f => {
+    const title = escapeHTML(f.title || '');
+    const creditsText = f.credits || '';
+
+    const id = toYouTubeId(f.videoId || f.url || '');
+    let mediaHtml = '';
+
+    if (id && !f.noEmbed) {
+      // Ajout d'un param origin quand possible
+      const originParam = /^https?:/.test(location.protocol) ? `&origin=${encodeURIComponent(location.origin)}` : '';
+      const embed = `https://www.youtube.com/embed/${id}?modestbranding=1&rel=0&playsinline=1${originParam}`;
+
+      // href dans le srcdoc : échapper les &
+      const embedAutoplayEsc = `${embed}&autoplay=1`.replace(/&/g, '&amp;');
+
+      // Miniature robuste (maxres -> hq)
+      const thumbMax = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+      const thumbHQ  = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+
+      const srcdoc = `
+        <style>
+          *{padding:0;margin:0;overflow:hidden}
+          html,body{height:100%}
+          a{display:block;height:100%;width:100%;position:relative;text-decoration:none}
+          img{height:100%;width:100%;object-fit:cover}
+          .play{position:absolute;inset:auto auto 50% 50%;transform:translate(-50%,-50%);
+                width:68px;height:48px;border-radius:12px;background:rgba(0,0,0,.55)}
+          .tri{position:absolute;left:50%;top:50%;transform:translate(-35%,-50%);
+               width:0;height:0;border-left:18px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
+          .label{position:absolute;left:12px;bottom:12px;color:#fff;font:600 14px/1.2 system-ui;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+        </style>
+        <a href="${embedAutoplayEsc}" target="_self" rel="noopener">
+          <img src="${thumbMax}" alt="${title || 'YouTube'}"
+               referrerpolicy="no-referrer"
+               onerror="this.onerror=null;this.src='${thumbHQ}'">
+          <div class="play"><i class="tri"></i></div>
+          <span class="label">Lire</span>
+        </a>
+      `.trim();
+
+      mediaHtml = `<iframe
+        title="${title || 'YouTube'}"
+        ${isSafari ? 'loading="eager"' : 'loading="lazy"'}
+        src="${embed}"  <!-- sera remplacé au clic -->
+        srcdoc="${srcdoc.replace(/"/g,'&quot;')}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+
+    } else if (id && f.noEmbed) {
+      // Fallback : miniature + lien vers YouTube (nouvel onglet)
+      const watch = `https://www.youtube.com/watch?v=${id}`;
+      const thumbMax = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+      const thumbHQ  = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+
+      mediaHtml = `
+        <a class="yt-fallback" href="${watch}" target="_blank" rel="noopener" aria-label="Regarder ${title || 'la vidéo'} sur YouTube">
+          <img src="${thumbMax}" alt="${title || 'YouTube'}"
+               referrerpolicy="no-referrer"
+               onerror="this.onerror=null;this.src='${thumbHQ}'">
+          <div class="play"><i class="tri"></i></div>
+          <span class="label">Regarder sur YouTube</span>
+        </a>
+      `;
+    } else if (f.poster) {
+      const poster = escapeHTML(f.poster);
+      mediaHtml = `<img src="${poster}" alt="${title || 'Poster'}" loading="lazy" decoding="async">`;
+    } else {
+      return ''; // rien à afficher
+    }
+
+    return `
+      <article class="film-item">
+        <div class="video-wrap">${mediaHtml}</div>
+        <aside class="project-meta film-credits">
+          ${title ? `<h2 class="project-side-title">${title}</h2>` : ''}
+          <div class="credits">${escapeHTML(creditsText)}</div>
+        </aside>
+      </article>
+    `;
+  }).join('');
 })();

@@ -3,6 +3,60 @@
 ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Tilt+Prism&family=Work+Sans:wght@300;400;500;600;700&display=swap');
 
+
+/* OS-NATIVE BASE */
+:root {
+  /* Laisse le navigateur gérer les scrollbars/form controls selon le thème système */
+  color-scheme: light dark;
+
+  /* Couleurs système (CSS System Colors) → suivent l'OS */
+  --bg: Canvas;
+  --text: CanvasText;
+  --muted: GrayText;
+  --accent: AccentColor;
+  --accent-text: AccentColorText;
+}
+
+/* Fond & typographie “système” */
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+        "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Liens/inputs adoptent l’accent OS */
+a { color: LinkText; }
+button, input, select, textarea {
+  font: inherit;
+  accent-color: var(--accent); /* cases à cocher, sliders, etc. */
+}
+
+/* Respect des préférences d’accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (prefers-contrast: more) {
+  :root { --muted: CanvasText; }
+}
+
+/* Zones sûres iOS (notch) à appliquer où utile, ex. header/footer */
+.safe-pad {
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  padding-left: max(16px, env(safe-area-inset-left));
+}
+
+
 /* Afficher les \n dans le texte du projet */
 #p-meta { white-space: pre-line; }
 
@@ -34,10 +88,10 @@ img { max-width: 100%; display: block; }
 /* =========================================================
    TYPO / BASE
 ========================================================= */
-html {
-  /* Typo par défaut du site = Work Sans */
-  html { font-family: var(--ui-font); color: var(--fg); }
-}
+
+/* Typo par défaut */
+html { font-family: var(--ui-font); color: var(--fg); }
+
 body {
   background: var(--bg);           /* ✅ on laisse l'image au calque .bg via JS */
   line-height: 1.7;
@@ -51,21 +105,18 @@ body {
 .bg{
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;              /* ✅ était -1 : on remonte au plan “0” */
+  pointer-events: none;    /* ✅ ne bloque aucun clic/scroll */
   background-image: url('images/textures/home-landscape.jpg');
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(105%) contrast(105%);
 }
-
-/* Supprime le pseudo-élément qui pouvait recouvrir */
-.bg::after{ content: none; }
-
-/* Mobile */
 @media (max-width: 720px){
   .bg{ background-image: url('images/textures/home-portrait.jpg'); }
 }
+
 
 /* =========================================================
    HEADER FIXES : LOGO + CONTACT
@@ -93,74 +144,98 @@ body {
 }
 
 
+
 /* =========================================================
-   ACCUEIL : DEUX TRIANGLES LIENS
+   ACCUEIL : DEUX TRIANGLES LIENS (isocèles + responsive)
 ========================================================= */
 
-/* Espace de composition fixe qui se scale (comme un viewBox) */
+/* Scène proportionnelle à la largeur de la page */
 .content{ min-height:100svh; display:grid; place-items:center; padding:2rem; }
+
 .tri-wrap{
   position: relative;
-  width: min(960px, 92vw);
-  aspect-ratio: 1000 / 540;       /* scène proportionnelle et fiable */
+  width: min(92vw, 1200px);
+  height: calc(min(92vw, 1200px) * 0.58); /* hauteur scène basée sur la largeur */
 }
 
-/* Triangle équilatéral : h = sqrt(3)/2 * base  →  aspect-ratio = 1 / 0.8660254 */
+/* Réglages généraux */
 :root{
-  --tri-eq: calc(1 / 0.8660254038);
-  --tri-fill: rgba(210,210,210,.92);
+  /* largeur d’un triangle (relative à la largeur d’écran) */
+  --tri-w: clamp(200px, 26vw, 400px);
+  /* isocèle : ratio largeur/hauteur (1 / k → hauteur = k * largeur) */
+  --tri-aspect: 1 / 0.80; /* ↔︎ ajuste entre 0.70–0.90 selon le look voulu */
+  --tri-fill: rgba(183, 183, 183, 0.92);
   --tri-border: rgba(255,255,255,.12);
-  --tri-text: #b33;
   --tri-b: clamp(8px, 1.2vmin, 14px);
+  --tri-text: rgb(173, 65, 55);
 }
 
-/* Forme, ombre et “bordure” */
+/* Forme de base : triangle isocèle pointe en bas */
 .tri{
   position: absolute;
-  width: 42%;
-  aspect-ratio: var(--tri-eq);                 /* ✅ équilatéral */
+  width: var(--tri-w);
+  aspect-ratio: var(--tri-aspect);                 /* largeur / hauteur */
   background: var(--tri-fill);
-  clip-path: polygon(50% 100%, 0 0, 100% 0);   /* pointe vers le bas */
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
   filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
   text-decoration: none;
+  /* placement par centre (plus fiable en responsive) */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);               /* recentre l’élément */
 }
+
 .tri::before{
   content:"";
   position:absolute;
-  inset: calc(var(--tri-b) * -1);              /* “bordure” responsive */
+  inset: calc(var(--tri-b) * -1);
   background: var(--tri-border);
   clip-path: inherit;
   z-index:-1;
 }
 
-/* Texte centré (h & v), jamais serré à gauche */
+/* ===== Positions relatives à la largeur (via pourcentages de la scène) */
+.tri-left{
+  /* centre du triangle gauche (ajuste ces % pour matcher ta maquette) */
+  left: 35%;
+  top: 53%;
+}
+
+.tri-right{
+  /* triangle droit : pointe vers le HAUT (rotation 180° autour du centre) */
+  left: 61%;
+  top: 47%;
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* ===== Labels : haut pour le gauche, bas pour le droit */
 .tri-label{
-  position:absolute; inset:50% auto auto 50%;
-  transform: translate(-50%,-50%);
+  position:absolute;
+  left:50%;
+  width: 82%;
+  transform: translateX(-50%); /* pas de rotation ici par défaut */
   text-align:center;
   font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-weight: 300;
   letter-spacing: .06em;
   line-height: 1.08;
   color: var(--tri-text);
-  font-size: clamp(22px, 2.8vw, 40px);
+  font-size: clamp(22px, 2.4vw, 40px);
   user-select:none;
-  pointer-events:none; /* toute la surface du triangle reste cliquable */
+  pointer-events:none;
 }
 
-/* Placement et retournement du 2e triangle */
-.tri-left  { left: 12%; top: 20%; }
-.tri-right { right:12%; top:  6%; transform: rotate(180deg); }
-/* Remettre le texte du triangle retourné à l'endroit */
-.tri-right .tri-label{ transform: translate(-50%,-50%) rotate(180deg); }
-
-/* ===== Mobile : on garde EXACTEMENT la même géométrie, juste plus petit */
-@media (max-width: 720px){
-  .tri-wrap{ width: min(700px, 96vw); }
-  .tri-left  { left: 6%;  top: 22%; width: 70%; }
-  .tri-right { right:6%;  top:  6%; width: 70%; }
-  .tri-label { font-size: clamp(18px, 6vw, 28px); }
+.tri-left .tri-label{
+  top: 12%;             /* calé en haut du triangle gauche */
 }
+
+.tri-right .tri-label{
+  bottom: 62%;          /* calé en bas du triangle droit */
+  /* le parent est rotaté de 180°, on remet le texte à l’endroit */
+  transform: translateX(-50%) rotate(180deg);
+}
+
+
 
 
 /* =========================================================
@@ -171,6 +246,7 @@ body {
 
 .pw-stage{
   position: relative;
+  z-index: 1;        
   padding: clamp(28px, 10vh, 80px) 0; /* ordre min, préféré, max corrigé */
   display: grid;
   place-items: center;
@@ -221,6 +297,8 @@ body {
 .project-page { overflow-y: auto; }
 
 .project{
+  position: relative;
+  z-index: 1;     
   --pad-h: clamp(8px, 2.4vw, 28px);
   padding: clamp(24px, 6vh, 72px) var(--pad-h) clamp(28px, 8vh, 96px);
 }
@@ -228,6 +306,7 @@ body {
 /* Grille : gauche = galerie / droite = texte */
 .project-grid{
   display: grid;
+  z-index: 1;
   grid-template-columns: max-content clamp(480px, 40vw, 800px);
   column-gap: clamp(10px, 4vw, 50px);   /* seul espace entre image et texte */
   align-items: start;
@@ -405,10 +484,11 @@ body {
   .lb-prev{ left: 12px; } .lb-next{ right: 12px; }
 }
 
+
 /* =========================================================
    MOBILE OVERRIDES — n'affecte PAS le desktop
 ========================================================= */
-@media (max-width: 720px){
+@media (max-width: 720px) {
 
   /* Container page projet */
   .project{
@@ -450,6 +530,7 @@ body {
     font-size: clamp(15px, 3.6vw, 17px);
     line-height: 1.6;
   }
+
   /* si tu utilises un titre dans la colonne de droite */
   .project-side-title{
     font-size: clamp(18px, 5vw, 22px);
@@ -486,4 +567,67 @@ body {
     row-gap: clamp(6px, 2.5vh, 12px);
     padding: 0 clamp(8px, 4vw, 16px);
   }
+}
+/* =========================================================
+   FILM WORKS
+========================================================= */
+
+/* petit décalage sous le logo si besoin */
+.project{ padding-top: calc(2vh + 5px); }
+
+.film-list{
+  display: grid;
+  gap: clamp(8px, 1vh, 20px);
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  padding: clamp(24px, 6vh, 72px) clamp(12px, 4vw, 28px);
+  /* option simple pour éviter le chevauchement avec le logo */
+  margin-top: clamp(48px, 10vh, 120px);
+}
+
+.film-item{
+  display: grid;
+  grid-template-columns: clamp(480px, 40vw, 800px) minmax(280px, 48ch);
+  column-gap: clamp(12px, 4vw, 50px);
+  align-items: start;
+  justify-content: center;
+  margin-bottom: clamp(28px, 6vh, 60px);
+  position: relative;
+  z-index: 1;
+}
+
+.film-credits .credits { white-space: pre-line; }
+
+.video-wrap{
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  background:#000;
+  box-shadow: 0 12px 48px rgba(0,0,0,.35);
+}
+
+/* fonctionne pour iframe ET img */
+.video-wrap > *{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover; /* ou 'contain' si tu préfères voir toute l’image */
+}
+
+/* Film Works : les crédits ne doivent pas être sticky */
+.film-credits{
+  position: static !important;
+  top: auto !important;
+  transform: none !important;
+  align-self: start;
+  justify-self: start;
+  max-width: 48ch;
+}
+
+
+@media (max-width: 900px){
+  .film-item{ grid-template-columns: 1fr; }
 }
