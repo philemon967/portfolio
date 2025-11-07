@@ -568,6 +568,9 @@ body {
     padding: 0 clamp(8px, 4vw, 16px);
   }
 }
+
+
+
 /* =========================================================
    FILM WORKS
 ========================================================= */
@@ -605,10 +608,14 @@ body {
   position: relative;
   background:#000;
   box-shadow: 0 12px 48px rgba(0,0,0,.35);
+  overflow: hidden; /* ✅ empêche tout débordement (triangles globaux, etc.) */
 }
 
-/* fonctionne pour iframe ET img */
-.video-wrap > *{
+/* ----- médias intégrés (iframe / img) — pas les <a> ----- */
+.video-wrap > iframe,
+.video-wrap > img,
+.video-wrap > video,
+.video-wrap > canvas{
   position: absolute;
   inset: 0;
   width: 100%;
@@ -616,6 +623,50 @@ body {
   border: 0;
   object-fit: cover; /* ou 'contain' si tu préfères voir toute l’image */
 }
+
+/* ----- Fallback miniature cliquable (quand noEmbed: true) ----- */
+.video-wrap > a.yt-fallback{
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+.video-wrap > a.yt-fallback > img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+.video-wrap > a.yt-fallback .play{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 68px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-wrap > a.yt-fallback .label{
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  color: #fff;
+  font: 600 14px/1.2 system-ui;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.video-wrap a:focus{ outline: none; }
+
+/* ----- Sécurité : neutraliser toute .tri dans la vignette ----- */
+.video-wrap .tri{ display: none !important; }
 
 /* Film Works : les crédits ne doivent pas être sticky */
 .film-credits{
@@ -626,7 +677,6 @@ body {
   justify-self: start;
   max-width: 48ch;
 }
-
 
 @media (max-width: 900px){
   .film-item{ grid-template-columns: 1fr; }
