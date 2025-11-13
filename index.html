@@ -51,7 +51,26 @@
   </aside>
 
   <!-- ======= LIEN CONTACT ======= -->
-  <a data-transition href="contact.html" class="contact-link" aria-label="Page Contact">contact</a>
+  <a href="#contact-modal" class="contact-link" aria-label="Afficher la fenêtre de contact">
+    contact
+  </a>
+
+  <!-- ======= MODALE CONTACT ======= -->
+  <div id="contact-modal" class="contact-modal">
+  <!-- zone sombre cliquable pour fermer -->
+  <a href="#" class="contact-modal__backdrop" aria-hidden="true"></a>
+
+  <!-- fenêtre au centre -->
+  <div class="contact-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <h2 id="contact-title" class="contact-modal__title">Contact</h2>
+
+    <p class="contact-modal__mail">
+      <a href="mailto:philemon.croc@gmail.com">philemon.croc@gmail.com</a>
+    </p>
+  </div>
+</div>
+
+
 
   <!-- ======= CONTENU CENTRAL : SVG avec 2 triangles ======= -->
  <div class="content">

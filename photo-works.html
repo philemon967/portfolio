@@ -43,8 +43,27 @@
     </a>
   </aside>
 
-  <!-- ======= LIEN CONTACT (fixe) ======= -->
-  <a data-transition href="contact.html" class="contact-link" aria-label="Page Contact">Contact</a>
+
+  <!-- ======= LIEN CONTACT ======= -->
+  <a href="#contact-modal" class="contact-link" aria-label="Afficher la fenêtre de contact">
+    contact
+  </a>
+
+  <!-- ======= MODALE CONTACT ======= -->
+  <div id="contact-modal" class="contact-modal">
+  <!-- zone sombre cliquable pour fermer -->
+  <a href="#" class="contact-modal__backdrop" aria-hidden="true"></a>
+
+  <!-- fenêtre au centre -->
+  <div class="contact-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <h2 id="contact-title" class="contact-modal__title">Contact</h2>
+
+    <p class="contact-modal__mail">
+      <a href="mailto:philemon.croc@gmail.com">philemon.croc@gmail.com</a>
+    </p>
+  </div>
+</div>
+
 
   <!-- ======= GRILLE 2×3 DE CARTES 2:3 ======= -->
   <main class="pw-stage" aria-label="Liste des projets photo">

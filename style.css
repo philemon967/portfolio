@@ -134,7 +134,7 @@ body {
 }
 .contact-link{
   position: fixed; right: 24px; bottom: 24px; z-index: 10;
-  font-family: var(--ui-font);
+  font-family: var(--accent);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .06em;
@@ -142,6 +142,71 @@ body {
   color: var(--accent);
   text-decoration: none;
 }
+
+/* ======= MODALE CONTACT ======= */
+
+.contact-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 1100;                  /* au-dessus de tout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+
+/* Quand l'ancre #contact-modal est dans l'URL */
+.contact-modal:target{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Fond sombre cliquable */
+.contact-modal__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(2px);
+}
+
+.contact-modal__dialog{
+  position: relative;
+  z-index: 1;
+  min-width: min(90vw, 420px);
+  padding: 24px 26px 22px;
+  background: rgba(10, 10, 10, 0.94);
+  border-radius: 0; /* plus de coins arrondis */
+  box-shadow: 0 18px 60px rgba(0,0,0,.85);
+  text-align: center;
+  color: var(--accent);
+  font-family: var(--ui-font);
+}
+
+
+/* Titre "Contact" */
+.contact-modal__title{
+  margin: 0 0 .6em;
+  font-size: clamp(16px, 1.8vw, 20px);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+/* Mail au centre */
+.contact-modal__mail{
+  margin: 0;
+}
+.contact-modal__mail a{
+  color: var(--accent);
+  font-weight: 400;
+  font-size: clamp(17px, 2vw, 20px);
+  text-decoration: none;
+}
+.contact-modal__mail a:hover{
+  text-decoration: underline;
+}
+
 
 
 
