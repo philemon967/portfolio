@@ -2,39 +2,39 @@
   "projects": [
     {
       "id": "01",
-      "meta": "Maxime in the woods\n\n\nDA — Maxime Hubert\nShot in Berlin on film",
-      "base": "images/photos/p01/",
-      "images": ["001.jpg","002.jpg","003.jpg","004.jpg","005.jpg"]
-    },
-    {
-      "id": "02",
-      "meta": "Stadt\n\n\nShot in Berlin",
-      "base": "images/photos/p02/",
-      "images": ["001.jpg","002.jpg","003.jpg"]
-    },
-    {
-      "id": "03",
       "meta": "Maely\n\n\nSunberg Records\nSet — FGO Barbara\nShot in Paris",
       "base": "images/photos/p03/",
       "images": ["001.jpg","002.jpg","003.jpg"]
     },
     {
-      "id": "04",
-      "meta": "Girls in London\n\n\nDA — Alice Yang\nShot in London",
-      "base": "images/photos/p04/",
-      "images": ["001.jpg","002.jpg","003.jpg","004.jpg"]
+      "id": "02",
+      "meta": "Maxime in the woods\n\n\nDA — Maxime Hubert\nShot in Berlin on film",
+      "base": "images/photos/p01/",
+      "images": ["001.jpg","002.jpg","003.jpg","004.jpg","005.jpg"]
     },
     {
-      "id": "05",
-      "meta": "Aris & Jenna\n\n\nDA — Aris Pedrioli, Jenna\nLight assistant — Ambroisie Bonnard\nSet — Studio Apelbaum\nShot in Berlin on film",
-      "base": "images/photos/p05/",
+      "id": "03",
+      "meta": "Stadt\n\n\nShot in Berlin",
+      "base": "images/photos/p02/",
       "images": ["001.jpg","002.jpg","003.jpg"]
     },
     {
+      "id": "04",
+      "meta": "Nuage\n\n\nShot in Le Lavandou",
+      "base": "images/photos/p11/",
+      "images": ["001.jpg","002.jpg"]
+    },
+    {
+      "id": "05",
+      "meta": "Montréal\n\n\nModels — Mathilde Duccini, Ethel Klop & Tyssian\n\nShot in Montréal on film ",
+      "base": "images/photos/p15/",
+      "images": ["001.jpg","002.jpg","003.jpg","004.jpg"]
+    },
+    {
       "id": "06",
-      "meta": "Axel\n\n\nSet — Studio Bleu\nShot in Paris",
-      "base": "images/photos/p06/",
-      "images": ["001.jpg"]
+      "meta": "Aris & Jenna\n\n\nDA — Aris Pedrioli, Jenna\nLight assistant — Ambroisie Bonnard\nSet — Studio Apelbaum\nShot in Berlin on film",
+      "base": "images/photos/p05/",
+      "images": ["001.jpg","002.jpg","003.jpg"]
     },
     {
       "id": "07",
@@ -50,9 +50,9 @@
     },
     {
       "id": "09",
-      "meta": "Press kit for Aurian\n\n\nDA — Nairuakelen\nShot in Paris",
-      "base": "images/photos/p09/",
-      "images": ["001.jpg","002.jpg"]
+      "meta": "Axel\n\n\nSet — Studio Bleu\nShot in Paris",
+      "base": "images/photos/p06/",
+      "images": ["001.jpg"]
     },
     {
       "id": "10",
@@ -62,9 +62,9 @@
     },
     {
       "id": "11",
-      "meta": "Nuage\n\n\nShot in Le Lavandou",
-      "base": "images/photos/p11/",
-      "images": ["001.jpg","002.jpg"]
+      "meta": "Girls in London\n\n\nDA — Alice Yang\nShot in London",
+      "base": "images/photos/p04/",
+      "images": ["001.jpg","002.jpg","003.jpg","004.jpg"]
     },
     {
       "id": "12",
@@ -86,9 +86,9 @@
     },
     {
       "id": "15",
-      "meta": "Montréal\n\n\nModels — Mathilde Duccini, Ethel Klop & Tyssian\n\nShot in Montréal on film ",
-      "base": "images/photos/p15/",
-      "images": ["001.jpg","002.jpg","003.jpg","004.jpg"]
+      "meta": "Press kit for Aurian\n\n\nDA — Nairuakelen\nShot in Paris",
+      "base": "images/photos/p09/",
+      "images": ["001.jpg","002.jpg"]
     },
     {
       "id": "16",

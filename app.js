@@ -246,6 +246,37 @@ document.querySelectorAll('a[data-transition]').forEach(a => {
 
 
 
+// =====================
+// Grille Photo Works (page photo-works.html)
+// =====================
+(async () => {
+  const grid = document.querySelector('.pw-grid');
+  if (!grid) return;              // ne s'exécute que sur photo-works
+
+  let data;
+  try {
+    const res = await fetch('data/projects.json', { cache: 'no-store' });
+    data = await res.json();
+  } catch (e) {
+    console.error('[projects.json] load error (grid):', e);
+    return;
+  }
+
+  const list = (data && data.projects) || [];
+  if (!list.length) return;
+
+  grid.innerHTML = list.map(p => {
+    const label = (p.title || `Projet ${p.id}`);
+    return `
+      <a class="pw-card" href="photo-projects.html?id=${p.id}"
+         aria-label="${label}">
+        <img src="${p.base}cover.jpg"
+             alt="${label} — visuel de couverture"
+             loading="lazy">
+      </a>
+    `;
+  }).join('');
+})();
 
 
 /* =========================================================
@@ -375,3 +406,88 @@ document.querySelectorAll('a[data-transition]').forEach(a => {
     `;
   }).join('');
 })();
+
+
+// =========================
+// Swipe gauche/droite
+// =========================
+document.addEventListener('DOMContentLoaded', () => {
+  const SWIPE_THRESHOLD = 40;    // distance horizontale minimale (px)
+  const MAX_OFF_AXIS = 60;       // tolérance verticale
+
+  function addSwipeListener(element, onSwipeLeft, onSwipeRight) {
+    if (!element) return;
+
+    let startX = 0;
+    let startY = 0;
+    let isTouching = false;
+
+    element.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      isTouching = true;
+    }, { passive: true });
+
+    element.addEventListener('touchmove', (e) => {
+      // on laisse le scroll normal, pas de preventDefault
+    }, { passive: true });
+
+    element.addEventListener('touchend', (e) => {
+      if (!isTouching) return;
+      isTouching = false;
+
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+
+      // trop vertical -> on ignore
+      if (Math.abs(dy) > MAX_OFF_AXIS) return;
+
+      if (dx <= -SWIPE_THRESHOLD) {
+        // swipe gauche -> suivant
+        onSwipeLeft && onSwipeLeft();
+      } else if (dx >= SWIPE_THRESHOLD) {
+        // swipe droite -> précédent
+        onSwipeRight && onSwipeRight();
+      }
+    });
+  }
+
+// ---- SWIPE SUR PAGE PROJET ----
+const projectPage = document.querySelector('.project-page');
+if (projectPage) {
+  const prevBtn = document.querySelector('.nav-prev');
+  const nextBtn = document.querySelector('.nav-next');
+
+  addSwipeListener(
+    projectPage,
+    () => {
+      // si la lightbox est ouverte, on ne change PAS de projet
+      const lbOpen = document.querySelector('.lightbox.open');
+      if (lbOpen) return;
+      nextBtn && nextBtn.click();
+    },
+    () => {
+      const lbOpen = document.querySelector('.lightbox.open');
+      if (lbOpen) return;
+      prevBtn && prevBtn.click();
+    }
+  );
+}
+
+
+  // ---- SWIPE DANS LA LIGHTBOX ----
+  const lightbox = document.querySelector('.lightbox');
+  if (lightbox) {
+    const lbPrev = lightbox.querySelector('.lb-prev');
+    const lbNext = lightbox.querySelector('.lb-next');
+
+    addSwipeListener(
+      lightbox,
+      () => lbNext && lbNext.click(),
+      () => lbPrev && lbPrev.click()
+    );
+  }
+});
