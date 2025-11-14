@@ -672,6 +672,7 @@ body {
   .lb-next {
     display: none !important;
 }
+}
 
 /* =========================================================
    FILM WORKS
@@ -795,7 +796,7 @@ body {
 
 /* Marge sous le logo PHILÉMON au chargement : page Projet photo (mobile) */
 @media (max-width: 720px) {
-  .project-page .project{
+  .photo-project-page .project{
     padding-top: clamp(96px, 18vh, 140px);
   }
 }
